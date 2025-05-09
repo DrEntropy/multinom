@@ -1,0 +1,16 @@
+name: multinom
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python >= 3.11
+  - scikit-learn
+  - pandas
+  - numpy
+  - matplotlib
+  - jupyter
+  - seaborn
+  - bambi
+  - pip
+  - pip:
+    - preliz
