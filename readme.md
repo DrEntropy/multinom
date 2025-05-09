@@ -16,3 +16,8 @@ see yaml file.
 - [PyMC Documentation](https://www.pymc.io/projects/docs/en/stable/)
 - [Multinomial Regression Overview](https://en.wikipedia.org/wiki/Multinomial_logistic_regression)
 - [Stan manual](https://mc-stan.org/docs/stan-users-guide/regression.html#multi-logit.section)
+
+Also this old pymc discourse post:
+- [PYMC Discourse](https://discourse.pymc.io/t/multivariate-multinomial-logistic-regression/5242)
+
+And the old version of Bayesian Analysis in Python covered this (Chapter 4)
