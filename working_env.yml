@@ -1,17 +1,18 @@
-name: working_env
+name: multinom
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - python 
+  - python >= 3.11
   - scikit-learn
   - pandas
   - numpy
   - matplotlib
-  - pytensor
-  - pymc 
-  - arviz
   - jupyter
+  - seaborn
+  - statsmodels
+  - numba
+  - bambi
   - pip
-  - libgcc=14.2 
-
+  - nutpie
+  - libgcc=14.2  # temporary fix for libgcc issue
