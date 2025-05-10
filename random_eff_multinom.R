@@ -7,16 +7,15 @@ set.seed(42)
 
 # Parameters
 num_companies <- 40
-num_categories <- 4 # Categories: 0 (pivot), 1, 2, 3
+num_categories <- 3 # Categories: 0 (pivot), 1, 2 . Minimally interesting
 
 
 # 1. Generate company random effects (pivot category 0 logit is 0)
-mean_effects <- c(0, 0, 0) # categories 1,2,3; 0 is baseline
+mean_effects <- c(0, 0) # categories 1,2,3; 0 is baseline
 cov_matrix <- matrix(c(
-  1.0, 0.5, 0.3,
-  0.5, 1.0, 0.4,
-  0.3, 0.4, 1.0
-), nrow = 3, byrow = TRUE)
+  1.0, 0.5,
+  0.5, 2.0
+), nrow = 2, byrow = TRUE)
 
 # Random effects for companies
 company_effects <- mvrnorm(n = num_companies, mu = mean_effects, Sigma = cov_matrix)
@@ -58,10 +57,10 @@ head(df)
 
 # 3. Fit categorical model using brms
 fit <- brm(
-  formula = type ~  (1 | type | company),
+  formula = type ~0 +  (1 | i | company),
   data = df,
   family = categorical(),
-  chains = 2, cores = 2, iter = 2000
+  chains = 4, cores = 4, iter = 2000
 )
 
 summary(fit)
