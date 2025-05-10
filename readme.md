@@ -9,7 +9,7 @@ Multinomial regression is a statistical technique used to model outcomes with mo
 
 ## Requirements
 
-see yaml file.
+see yaml file. Note that os of May 10 2025, there are issues with pymc installs on windows, see 'working_env.yml' for a workaround.
  
 ## References
 
