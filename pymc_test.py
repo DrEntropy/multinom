@@ -14,7 +14,7 @@ with pm.Model():
     obs = pm.Normal('obs', mu=mu, sigma=sigma, observed=data)
 
     # Sample from the posterior
-    trace = pm.sample(500, tune=500, cores = 1)
+    trace = pm.sample(500, tune=500, cores=1, chains=1)
 
 # Summarize and print results
 summary = az.summary(trace)
