@@ -13,5 +13,5 @@ dependencies:
   - arviz = 0.21
   - jupyter
   - pip
-  #- libgcc=14.2.0=h1383e82_2
+
 

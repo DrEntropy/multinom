@@ -6,7 +6,8 @@ import numpy as np
 np.random.seed(123)
 data = np.random.normal(loc=0, scale=1, size=100)
 import pytensor 
-#pytensor.config.cxx=“”
+#pytensor.config.cxx=""
+print(f"Pytensor config.cxx: {pytensor.config.cxx}")
 # Simple PyMC model
 with pm.Model():
     mu = pm.Normal('mu', mu=0, sigma=1)
