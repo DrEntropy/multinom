@@ -10,12 +10,13 @@ Multinomial regression is a statistical technique used to model outcomes with mo
 ## Requirements
 
 see yaml file. Note that os of May 10 2025, there are issues with pymc installs on windows, see 'working_env.yml' for a workaround.
- 
+
 ## References
 
 - [PyMC Documentation](https://www.pymc.io/projects/docs/en/stable/)
 - [Multinomial Regression Overview](https://en.wikipedia.org/wiki/Multinomial_logistic_regression)
 - [Stan manual](https://mc-stan.org/docs/stan-users-guide/regression.html#multi-logit.section)
+- [Bambi example](https://bambinos.github.io/bambi/notebooks/categorical_regression.html)
 
 Also this old pymc discourse post:
 - [PYMC Discourse](https://discourse.pymc.io/t/multivariate-multinomial-logistic-regression/5242)
