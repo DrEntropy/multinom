@@ -6,7 +6,7 @@ library(brms)
 set.seed(42)
 
 # Parameters
-num_companies <- 40
+num_companies <- 100
 num_categories <- 3 # Categories: 0 (pivot), 1, 2 . Minimally interesting
 
 
@@ -29,7 +29,7 @@ company_df <- data.frame(
 
 # 2. Generate observations for each company
 data_list <- lapply(1:num_companies, function(i) {
-  n_obs <- sample(1:10, 1)
+  n_obs <- sample(7:10, 1)
 
 
 
