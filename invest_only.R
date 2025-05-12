@@ -114,6 +114,7 @@ print(weighted_cov$cov)
 investor_data$counts = with(investor_data, cbind(D1,D2,D3,D4))
 
 
+
 fit <- brm(
   # 'i' is a dummy to indicate we want correlations between dealtypes
   # Also note that the trials(total_deals) is required even though redundant
@@ -247,6 +248,40 @@ for (inv in investor_ids) {
   legend("topright", legend = c("Observed", "Predicted"), col = c("red", "black"), pch=c(19, NA), lty=c(NA, 1))
 }
 
+################################
+# Alternative- Dirichlet_multinomial
+#################################
+
+if(FALSE){ #disable this section for now
+library(cmdstanr)
+
+# Prepare data
+stan_data <- list(
+  N = nrow(investor_data),
+  K = length(dealtypes),
+  counts = as.matrix(investor_data$counts)
+)
+
+# Compile the model
+model <- cmdstan_model("dirichletMn.stan")
+
+# Run the model
+fit <- model$sample(data = stan_data, chains = 4, iter_sampling = 1000, iter_warmup = 500)
+
+# Summary
+fit$summary("alpha")
+library(bayesplot)
+draws <- fit$draws()
+mcmc_trace(draws)
+
+mcmc_dens(draws, regex_pars = "alpha")
 
 
-
+#####
+# MLE
+#####
+#install.packages("MGLM") # old ?
+library(MGLM)
+dm_fit <- MGLMfit(as.matrix(investor_data$counts), dist="DM")
+dm_fit
+}
