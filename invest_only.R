@@ -248,9 +248,50 @@ for (inv in investor_ids) {
   legend("topright", legend = c("Observed", "Predicted"), col = c("red", "black"), pch=c(19, NA), lty=c(NA, 1))
 }
 
+######################################
+#
+# Alternative fit directly using stan
+#########################################
+if(FALSE){
+  library(cmdstanr)
+  investor_data$counts = with(investor_data, cbind(D1,D2,D3,D4))
+  stan_data <- list(
+    N = nrow(investor_data),
+    K = length(dealtypes),
+    counts = as.matrix(investor_data$counts)
+  )
+  # compare to stan version of logistic normal
+  model_lm = cmdstan_model("logisticNorm.stan")
+  fit <- model_lm$sample(data = stan_data, chains =4, cores=4, iter_sampling = 1000, iter_warmup =500)
+
+  draws_df <- fit$draws(format = "draws_df")
+  mcmc_trace(draws_df, pars = vars(starts_with("sigma")))
+  mcmc_trace(draws_df, pars = vars(starts_with("Omega")))
+  # Extract means for Omega and sigma
+  Omega_means <- draws_df |>
+    select(starts_with("Omega")) |>
+    summarise(across(everything(), mean)) |>
+    unlist()
+
+  sigma_means <- draws_df |>
+    select(starts_with("sigma")) |>
+    summarise(across(everything(), mean)) |>
+    unlist()
+
+  K_minus_1 <- length(sigma_means)
+  Omega_mean_matrix <- matrix(Omega_means, nrow = K_minus_1, byrow = FALSE)
+  cov_matrix <- diag(sigma_means) %*% Omega_mean_matrix %*% diag(sigma_means)
+  colnames(cov_matrix) <- rownames(cov_matrix) <- paste0("logodds_", 2:(K_minus_1 + 1))
+  print(cov_matrix)  # Exactly the same as brms
+
+}
+
+
 ################################
 # Alternative- Dirichlet_multinomial
 #################################
+# Note that this is workable but actualy less flexible.
+# All correlations must be negative and symmetric
 
 if(FALSE){ #disable this section for now
 library(cmdstanr)
@@ -275,6 +316,7 @@ draws <- fit$draws()
 mcmc_trace(draws)
 
 mcmc_dens(draws, regex_pars = "alpha")
+
 
 
 #####
