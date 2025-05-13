@@ -1,7 +1,8 @@
 library(dplyr)
 library(tidyr)
-library(MASS) # For multivariate normal sampling
 library(brms)
+library(bayesplot)
+library(posterior)
 
 set.seed(42)
 
@@ -18,7 +19,7 @@ cov_matrix <- matrix(c(
 ), nrow = 2, byrow = TRUE)
 
 # Random effects for group / subject
-group_effects <- mvrnorm(n = num_groups, mu = mean_effects, Sigma = cov_matrix)
+group_effects <- MASS::mvrnorm(n = num_groups, mu = mean_effects, Sigma = cov_matrix)
 group_effects <- cbind(0, group_effects) # Add pivot logits = 0
 colnames(group_effects) <- paste0("logit_", 0:(num_categories - 1))
 
@@ -52,7 +53,7 @@ df <- bind_rows(data_list)
 # Check simulated data
 head(df)
 
-# 3. Fit categorical model using brms
+#  Fit categorical model using brms
 fit <- brm(
   formula = type ~   (1 | i | group),
   data = df,
@@ -63,3 +64,53 @@ fit <- brm(
 summary(fit)
 print(VarCorr(fit)$group$cov)
 
+##
+# Alternative, convert to counts
+
+agg_df <- df |>
+  group_by(group,type) |> summarize(count = n()) |>
+  pivot_wider(id_cols = group, names_from = type, values_from = count, values_fill = 0) |>
+  mutate( counts = cbind(type_0,type_1,type_2)) |> ungroup() |>
+  mutate( total = type_0 + type_1 + type_2)
+
+fit2 <- brm(
+  formula = counts | trials(total) ~   (1 | i | group),
+  data =agg_df,
+  family = multinomial(),
+  chains = 4, cores = 4, iter = 2000
+)
+
+summary(fit2)
+print(VarCorr(fit2)$group$cov)
+
+## Use stan directly
+library(cmdstanr)
+
+stan_data <- list(
+  N = nrow(agg_df),
+  K = 3,
+  counts = as.matrix(agg_df$counts)
+)
+model_lm = cmdstan_model("logisticNorm.stan")
+fit <- model_lm$sample(data = stan_data, chains =4, cores=4)
+
+draws_df <- fit$draws(format = "draws_df")
+
+mcmc_trace(draws_df, pars = vars(starts_with("sigma")))
+mcmc_trace(draws_df, pars = vars(starts_with("Omega")))
+# Extract means for Omega and sigma
+Omega_means <- draws_df |>
+  select(starts_with("Omega")) |>
+  summarise(across(everything(), mean)) |>
+  unlist()
+
+sigma_means <- draws_df |>
+  select(starts_with("sigma")) |>
+  summarise(across(everything(), mean)) |>
+  unlist()
+
+K_minus_1 <- length(sigma_means)
+Omega_mean_matrix <- matrix(Omega_means, nrow = K_minus_1, byrow = FALSE)
+cov_matrix <- diag(sigma_means) %*% Omega_mean_matrix %*% diag(sigma_means)
+colnames(cov_matrix) <- rownames(cov_matrix) <- paste0("logodds_", 2:(K_minus_1 + 1))
+print(cov_matrix)  # Exactly the same as brms
