@@ -1,5 +1,5 @@
 data {
-  int<lower=1> N;              // number of investors
+  int<lower=1> N;              // number of sources / rows
   int<lower=2> K;              // number of categories
   array[N, K] int counts;      // observed counts per investor/category
 }

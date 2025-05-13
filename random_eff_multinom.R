@@ -57,7 +57,7 @@ head(df)
 
 # 3. Fit categorical model using brms
 fit <- brm(
-  formula = type ~0 +  (1 | i | company),
+  formula = type ~ 0 +  (1 | i | company),
   data = df,
   family = categorical(),
   chains = 4, cores = 4, iter = 2000
