@@ -5,7 +5,11 @@ This repository is a small project designed to explore multinomial regression us
 ## Overview
 
 Multinomial regression is a statistical technique used to model outcomes with more than two categories. This repository demonstrates how to implement and analyze multinomial regression models using PyMC.
- 
+
+* multinom.ipynb: This looks at the Iris data set and uses a multinomial regression model to predict the species of iris based on the features. 
+
+* random_effects_mn.ipynb: This explores random effects in multinomial regression.  In this case we look at the simplest possible model: Three categories and just one random effect. In the future may add covariats.
+
 
 ## Requirements
 

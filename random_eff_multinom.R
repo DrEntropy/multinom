@@ -6,42 +6,39 @@ library(brms)
 set.seed(42)
 
 # Parameters
-num_companies <- 100
+num_groups <- 100
 num_categories <- 3 # Categories: 0 (pivot), 1, 2 . Minimally interesting
 
 
-# 1. Generate company random effects (pivot category 0 logit is 0)
+
 mean_effects <- c(0, 0) # categories 1,2,3; 0 is baseline
 cov_matrix <- matrix(c(
   1.0, 0.5,
   0.5, 2.0
 ), nrow = 2, byrow = TRUE)
 
-# Random effects for companies
-company_effects <- mvrnorm(n = num_companies, mu = mean_effects, Sigma = cov_matrix)
-company_effects <- cbind(0, company_effects) # Add pivot logits = 0
-colnames(company_effects) <- paste0("logit_", 0:(num_categories - 1))
+# Random effects for group / subject
+group_effects <- mvrnorm(n = num_groups, mu = mean_effects, Sigma = cov_matrix)
+group_effects <- cbind(0, group_effects) # Add pivot logits = 0
+colnames(group_effects) <- paste0("logit_", 0:(num_categories - 1))
 
-company_df <- data.frame(
-  company = paste0("company_", 1:num_companies),
-  company_effects
+# simulated_df contains the underlying logits
+simulated_df <- data.frame(
+  group= paste0("group_", 1:num_companies),
+  group_effects
 )
 
-# 2. Generate observations for each company
-data_list <- lapply(1:num_companies, function(i) {
-  n_obs <- sample(7:10, 1)
-
-
-
-
+#  generate observations for each group
+data_list <- lapply(1:num_groups, function(i) {
+  n_obs <- rpois(lambda = 30, n=1)
   # Generate observations
   obs <- lapply(1:n_obs, function(j) {
-    logits <- company_effects[i, ]
+    logits <- group_effects[i, ]
     probs <- exp(logits) / sum(exp(logits))
     type <- sample(0:(num_categories - 1), size = 1, prob = probs)
 
     data.frame(
-      company = company_df$company[i],
+      group = simulated_df$group[i],
 
       type = paste0("type_", type)
     )
@@ -57,10 +54,12 @@ head(df)
 
 # 3. Fit categorical model using brms
 fit <- brm(
-  formula = type ~ 0 +  (1 | i | company),
+  formula = type ~   (1 | i | group),
   data = df,
   family = categorical(),
   chains = 4, cores = 4, iter = 2000
 )
 
 summary(fit)
+print(VarCorr(fit)$group$cov)
+
