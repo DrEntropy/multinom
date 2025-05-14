@@ -1,6 +1,6 @@
 .Rproj.user
 .Rhistory
-.Rproj
+*.Rproj
 .RData
 .Ruserdata
 *.exe
