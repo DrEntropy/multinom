@@ -15,7 +15,7 @@ parameters {
 
 model {
   // Priors
-  mu ~ normal(0, 3);
+  mu ~  student_t(3, 0, 2.5);
   sigma ~ student_t(3, 0, 2.5);
   L_Omega ~ lkj_corr_cholesky(1);
 
