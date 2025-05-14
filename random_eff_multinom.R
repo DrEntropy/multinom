@@ -25,7 +25,7 @@ colnames(group_effects) <- paste0("logit_", 0:(num_categories - 1))
 
 # simulated_df contains the underlying logits
 simulated_df <- data.frame(
-  group= paste0("group_", 1:num_companies),
+  group= paste0("group_", 1:num_groups),
   group_effects
 )
 
