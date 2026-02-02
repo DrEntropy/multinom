@@ -13,20 +13,34 @@ Data options:
 * Ice cream flavor, movie genre, IRIS? 
 * See also Advanced Regression Course.
 
+### Cross validation / model comparison
+
+**Core problem:** After aggregation, what is the right way to do cross-validation? Does hierarchical structure matter?
+
+**Context:** The answer depends on the use case:
+
+- If predicting for a **new single observation**, we need observation-level CV
+- If comparing models with **grouped data** (unique combinations of predictors), leaving out at group level may be better (this is what brms does by default)
+
+For example if the data is customer purchases among N-items,  if you want to predict next purchase, thats individual, if you want to predict a new customers buying patterns that would be at group level.
+
+TO do observational level k-fold:
+
+1.  Disaggregate -> split -> aggregate
+    * Take the data, disaggreate it into individual observations.  Do k-split at that level, then aggregate and fit , predicting on the held out 1/K fold (disaggregated?).
+    * Straightforward, but perhaps slow with large data sets.
+2. Data thinking / splitting per cell.
+    * I need to learn about this, but apparenetly it is possible to do the above without creating the intermediate individual level data.  
+    * This applies to "Convolution-closed distributions" [Data thinning for convolution-closed distributions](https://arxiv.org/abs/2301.07276)
+
+See also [Stan discourse discussion](https://discourse.mc-stan.org/t/understanding-loo-and-binomial-models/23500) 
+
+See also Advanced Regression Course.
 
 
 ### ZSN
 Discuss zerosum normal - in particular that it should also sum to zero on outcome which avoids issues with choosing a pivot/refecence category when there is no suitable choice.  Note further that with random effects, if you have a reference, there are no random effects for that category, breaking symmetry. 
 
-### Cross validation / model comparison
-Discuss how to do cross validation . The right way to do this depends on the use case: If you actually want to assess prediction quality for the model for a new observation, that observation is going to be a single one. So is there an efficient way to do this? Sure but i dont think this is automated in any of the packages. For model comparison,  if you leave out at the group level (i.e. unique combination of predictors) then it is harder problem and maybe the better way? This is what brms would do, for example. But see thsi: [https://discourse.mc-stan.org/t/understanding-loo-and-binomial-models/23500](https://discourse.mc-stan.org/t/understanding-loo-and-binomial-models/23500)    
-
-In any event to do the proper individual observation level k-fold requires manually doing it i believe.  That is,  'disagregate' the data so that you have one row per observation.  Do the k-fold split and then re-aggregate each of the splits, and fit as usual.  I think this might be possible without the actual intermediary steps (at least for binomial case) with something called binomial thinning / splitting per cell?   [Data thinning for convolution-closed distributions](https://arxiv.org/abs/2301.07276)
-
-
-But Clarify: This doesnt apply to all cases, often teh observations are the whole , for example how many times a particular customer purchases for N visits (not 'next visit').  This leaving out whole rows is what BRMS does when using the kfold function.  
-
- 
 
 ### using varying intercepts to emulate overdispersion
 
@@ -40,7 +54,9 @@ Other examples: [Nominal Regression in Stan](https://quantscience.rbind.io/posts
 
 ## TODO:
 
-[] review claude coded article, or start over. This does capture a lot of my thoughts though
+[] review claude-assisted article (multinomial_regression_article.ipynb), or start over. This does capture a lot of my thoughts though
+[] Review data thinning paper
+[] Find a good dataset!
 [] Compare BRMS / span / kfold. 
 [] move this as subdirectory in NotesonDatasci
 
