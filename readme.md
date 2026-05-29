@@ -14,7 +14,17 @@ Multinomial regression is a statistical technique used to model outcomes with mo
 
 ## Requirements
 
-see yaml file. Note that os of May 10 2025, there are issues with pymc installs on windows, see 'working_env.yml' for a workaround.
+Python 3.12+ and [uv](https://docs.astral.sh/uv/). Dependencies are in `pyproject.toml` (PyMC 6 with the `nutpie` extra, Bambi, Jupyter, and the usual scientific stack).
+
+```bash
+uv sync
+uv run python pymc_test.py    # quick sampling smoke test
+uv run jupyter lab
+```
+
+For notebooks, select the **Python (multinom uv)** kernel (install once with `uv run python -m ipykernel install --user --name multinom --display-name "Python (multinom uv)"`).
+
+Legacy conda environment files are in `archive/`.
 
 ## Research Notes
 

@@ -1,0 +1,19 @@
+[project]
+name = "multinom"
+version = "0.1.0"
+description = "Multinomial regression with PyMC"
+readme = "readme.md"
+requires-python = ">=3.12"
+dependencies = [
+    "arviz>=1.1.0",
+    "bambi>=0.18",
+    "ipykernel>=7.2.0",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.9",
+    "numpy>=2.4.6",
+    "pandas>=3.0.3",
+    "pymc[nutpie]>=6,<7",
+    "scikit-learn>=1.8.0",
+    "seaborn>=0.13.2",
+    "statsmodels>=0.14.6",
+]
