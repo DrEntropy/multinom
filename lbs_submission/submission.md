@@ -9,7 +9,7 @@ aggregate it into per-group count vectors to make a hierarchical fit tractable. 
 customer 17 chose categories (3,1,0,5) across 9 purchases. (This arose with proprietary
 investor/deal-type data; the example is synthetic but structurally identical.) Handed this
 data, you might just fit independent random effects per category — modeling the correlations between
-products is less obvious, and isn't even offered in Bambi. Do they earn their keep? On
+products is less obvious, and isn't even offered in Bambi. Is this worth doing? On
 synthetic data a targeted posterior predictive check separates the two models cleanly,
 but cross-validating that comparison is where I get stuck — it seems to depend on what I'm
 predicting: an existing customer's next purchase, or a new customer's whole basket.
